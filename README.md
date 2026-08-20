@@ -33,6 +33,3 @@ isn't calculation at all — it's *stagecraft*.
 ## Connect
 
 - **LinkedIn:** [ashishbabaria](https://www.linkedin.com/in/ashishbabaria)
-
-> _Bio and contact details above are placeholders — edit this section to taste before
-> making the repo public._
