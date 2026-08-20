@@ -1,0 +1,17 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.11.0/schema.json",
+  "name": "75b1062acb586d7b9b5d",
+  "position": {
+    "x": 833.06531738730439,
+    "y": 171.34682612695497,
+    "z": 4000,
+    "height": 360,
+    "width": 1034,
+    "tabOrder": 1000
+  },
+  "visualGroup": {
+    "displayName": "Top bottom Subcat",
+    "groupMode": "ScaleMode"
+  },
+  "isHidden": true
+}

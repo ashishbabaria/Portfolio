@@ -1,0 +1,263 @@
+table KPIs
+	lineageTag: 67394f50-d550-439a-b7ac-f36df86be4b0
+
+	measure Sales = SUMX('Fact_Combined Sales', If( 'Fact_Combined Sales'[Discount_%] <>BLANK(), 'Fact_Combined Sales'[Price]*'Fact_Combined Sales'[Qty]*'Fact_Combined Sales'[Discount_%], 'Fact_Combined Sales'[Price]*'Fact_Combined Sales'[Qty]))
+		formatString: 0
+		displayFolder: 01: Basic Measures
+		lineageTag: 5c242458-d24c-4216-9b58-75d09a75df93
+
+	measure 'Slicer Selection max' = MaxX('Dates disconnected', 'Dates disconnected'[Date])
+		formatString: General Date
+		displayFolder: 03: Growth Visual Measures
+		lineageTag: 8ad6134d-abe4-44ce-a39a-96cb1270d630
+
+	measure 'Slicer Selection min' = MinX('Dates disconnected', 'Dates disconnected'[Date])
+		formatString: General Date
+		displayFolder: 03: Growth Visual Measures
+		lineageTag: a0efe081-4b4e-4b5e-adcd-a20c87d30ad7
+
+	measure 'Max Date' = Max('Dim_Date'[Date])
+		formatString: dd-mmm-yy
+		displayFolder: 02: MAX & MIN Measures
+		lineageTag: b0a24685-2490-4376-8e13-c69efc19b15f
+
+		annotation PBI_FormatHint = {"isDateTimeCustom":true}
+
+	measure 'Sales RT' = ```
+			
+			VAR MaxDate = MAX ( 'Dim_Date'[Date] ) 
+			RETURN
+			    CALCULATE (
+			        [Sales],            
+			        'Dim_Date'[Date] <= MaxDate,  
+			        ALL ( 'Dim_Date' )            
+			    )
+			```
+		displayFolder: 01: Basic Measures
+		lineageTag: 79bd47e4-3295-49f6-a44b-415159e2c095
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Max Sales by Month' = CALCULATE(MAXX(all('Dim_Date'[Month Name]),[Sales]),All('Dim_Date'))
+		displayFolder: 02: MAX & MIN Measures
+		lineageTag: 3e34e56c-4d38-4a71-9660-04642fbfb55e
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Min Sales by Month' = ```
+			CALCULATE(MINX(all('Dim_Date'[Month Name]),[Sales]),All('Dim_Date'))
+			
+			```
+		displayFolder: 02: MAX & MIN Measures
+		lineageTag: 4fcee6a2-2f59-4788-8328-78393f31235d
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Sales till To date' = ```
+			CALCULATE([Sales RT], 
+			                                filter ('Dim_Date',max('Dim_Date'[Date])<= [Slicer Selection max])
+			                                )
+			```
+		displayFolder: 03: Growth Visual Measures
+		lineageTag: 23e8b8af-3a2f-4b49-8317-e10423d4fe8e
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Sales till From date' = ```
+			CALCULATE([Sales RT], 
+			                                filter ('Dim_Date',max('Dim_Date'[Date])<= [Slicer Selection min])
+			                                )
+			```
+		displayFolder: 03: Growth Visual Measures
+		lineageTag: fc73733e-cfe1-4042-b034-75cddc3b01e0
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Growth Sales between dates' = DIVIDE([Sales RT on Date to]- [Sales RT on Date from],[Sales RT on Date from],0)
+		formatString: 0.00%;-0.00%;0.00%
+		displayFolder: 03: Growth Visual Measures
+		lineageTag: ca3e4432-6f8a-41ef-b07c-07bf89605448
+
+	measure 'Sales RT on Date From  series' = ```
+			if(max(Dim_Date[Date]) = [Slicer Selection min], 
+			                                [Sales RT], 
+			                                BLANK() )
+			
+			```
+		displayFolder: 03: Growth Visual Measures
+		lineageTag: 0c4adb31-065b-4f43-acec-3076c4f02997
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Sales RT on Date from' = CALCULATE( [Sales RT on Date From  series] , filter( Dim_Date, [Max Date] = [Slicer Selection min]))
+		displayFolder: 03: Growth Visual Measures
+		lineageTag: 993af6ea-6b2a-43a6-bcb6-6b16252f6bca
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Sales RT on Date To series' = ```
+			if(max(Dim_Date[Date]) = [Slicer Selection max], 
+			                                [Sales RT], 
+			                                BLANK() )
+			```
+		displayFolder: 03: Growth Visual Measures
+		lineageTag: 4c2dd9a9-02a3-4450-b111-6171175502fb
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Sales RT on Date to' = CALCULATE( [Sales RT on Date To series] , filter( Dim_Date, [Max Date] = [Slicer Selection max]))
+		displayFolder: 03: Growth Visual Measures
+		lineageTag: 1818c7c8-e70c-4c70-894b-32854dcf66ad
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Dates Between Growth BGLine' = ```
+			
+			
+			VAR _max= CALCULATE( MAXX(Dim_Date,[Sales RT]), Dim_Date[Date])
+			VAR _limitmultiplayer = 1.20
+			VAR  _Maxlimit = _max*_limitmultiplayer
+			
+			RETURN
+			If( max(Dim_Date[Date]) >= [Slicer Selection min] && max(Dim_Date[Date]) <= [Slicer Selection max], _Maxlimit, 
+			        BLANK()
+			        )
+			```
+		displayFolder: 03: Growth Visual Measures
+		lineageTag: a913cf6b-5ceb-4c2e-b24e-4c17aca0713f
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Y Axis Upper Limit Sales Growth Line Chart' = ```
+			
+			
+			VAR _OverallMaxSalesRT= MAXX(ALL(Dim_Date),[Sales RT]) 
+			VAR _Limitextender = 1.70
+			VAR _Yaxisupperlimit= _OverallMaxSalesRT*_Limitextender
+			
+			RETURN
+			_Yaxisupperlimit
+			```
+		displayFolder: 03: Growth Visual Measures
+		lineageTag: c0b3b8a3-4519-4f1f-bc46-2e6d7e2c5953
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Sales RT on Date From lead line' =
+			
+			
+			VAR _maxRT= CALCULATE( MAXX(Dim_Date,[Sales RT]), Dim_Date[Date])
+			VAR _leadlinepoint= _maxRT*1.20
+			RETURN     If( max(Dim_Date[Date])= [Slicer Selection min],_leadlinepoint,BLANK())
+		displayFolder: 03: Growth Visual Measures
+		lineageTag: a227cbcd-839e-4f5d-b5c9-c485ee503cc0
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Sales RT on Date To lead line' =
+			
+			
+			VAR _maxRT = CALCULATE( MAXX(Dim_Date,[Sales RT]), Dim_Date[Date])
+			VAR _leadlinepoint= _maxRT*1.20
+			RETURN     If( max(Dim_Date[Date])= [Slicer Selection max],_leadlinepoint,BLANK())
+		displayFolder: 03: Growth Visual Measures
+		lineageTag: 018c3b18-bff7-473e-ac9b-96ded41889fc
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Dates Between Highlight BG' = ```
+			
+			
+			VAR _max= CALCULATE( MAXX(Dim_Date,[Sales RT]), Dim_Date[Date])
+			VAR _limitmultiplayer = 1.70
+			VAR  _Maxlimit = _max*_limitmultiplayer
+			
+			RETURN
+			If( max(Dim_Date[Date]) >= [Slicer Selection min] && max(Dim_Date[Date]) <= [Slicer Selection max], _Maxlimit, 
+			        BLANK()
+			        )
+			```
+		displayFolder: 03: Growth Visual Measures
+		lineageTag: a073e633-da88-4f6b-98e3-a4590e818ac8
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Sales RT on Date midpoint on Growthline' =
+			
+			VAR _Dateinterval = INT((DATEDIFF([Slicer Selection min],[Slicer Selection max],DAY))/2)
+			VAR _Datemidpoint = DATE(YEAR([Slicer Selection min]),MONTH([Slicer Selection min]),day([Slicer Selection min])+_Dateinterval)
+			VAR _max = CALCULATE( MAXX(Dim_Date,[Sales RT]), Dim_Date[Date])
+			VAR _leadlinepoint= _max*1.15
+			RETURN     If( max(Dim_Date[Date])= _Datemidpoint,_leadlinepoint,BLANK())
+		displayFolder: 03: Growth Visual Measures
+		lineageTag: 4541823c-91f2-42f7-80c4-9c067ab672b0
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Data Lable Growth %' = FORMAT(CALCULATE([Growth Sales between dates],all(Dim_Date)), "0.00%")
+		displayFolder: 03: Growth Visual Measures
+		lineageTag: e9ad0981-e5d2-44ae-9000-9433fea2aefb
+
+	measure 'Data Label Growth Title' = " Growth"
+		displayFolder: 03: Growth Visual Measures
+		lineageTag: 99a9ab2f-8b45-468e-b82c-51869ab22777
+
+	measure 'Sales RT on Date midpoint on above Growthline' =
+			
+			VAR _Dateinterval = INT((DATEDIFF([Slicer Selection min],[Slicer Selection max],DAY))/2)
+			VAR _Datemidpoint = DATE(YEAR([Slicer Selection min]),MONTH([Slicer Selection min]),day([Slicer Selection min])+_Dateinterval)
+			VAR _max = CALCULATE( MAXX(Dim_Date,[Sales RT]), Dim_Date[Date])
+			VAR _leadlinepoint= _max*1.35
+			RETURN     If( max(Dim_Date[Date])= _Datemidpoint,_leadlinepoint,BLANK())
+		displayFolder: 03: Growth Visual Measures
+		lineageTag: 8cddad56-5101-492b-a858-b4d748549096
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Data Label Duration' =
+			
+			
+			VAR _intervaldays= DATEDIFF([Slicer Selection min], [Slicer Selection max],DAY)
+			VAR _labelstring = _intervaldays & " " & " Days"
+			
+			RETURN
+			_labelstring
+		displayFolder: 03: Growth Visual Measures
+		lineageTag: bce2afe9-9310-40f4-a4e1-5f4ec96b4468
+
+	measure 'Filter String' = ```
+			
+			
+			VAR _Saleschannel = SWITCH( TRUE(),
+			                            SELECTEDVALUE( Dim_Channel[Channel_ID] ) = 1 , " Amazon ",
+			                            SELECTEDVALUE(Dim_Channel[Channel_ID])= 2, " On-site",
+			                            " All"
+			                    )
+			VAR _fiterstringvalue = "Sales Channel:" & _Saleschannel 
+			VAR _fiterbyvalue =  SWITCH( TRUE(),
+			                        SELECTEDVALUE('Param 01: Product'[Param: Product Order] )= 0 && SELECTEDVALUE(Dim_Categoty[Category]) <> BLANK(),
+			                        "| Category: " & SELECTEDVALUE(Dim_Categoty[Category]),
+			                        SELECTEDVALUE('Param 01: Product'[Param: Product Order] )= 1 && SELECTEDVALUE(Dim_Categoty[Sub_Category]) <> BLANK(),
+			                        "| Sub-Category: " & SELECTEDVALUE(Dim_Categoty[Sub_Category]),
+			                        SELECTEDVALUE('Param 01: Product'[Param: Product Order] )= 2 && SELECTEDVALUE(Dim_Product[Product_Name]) <> BLANK(),
+			                        "| Product: " & SELECTEDVALUE(Dim_Product[Product_Name])
+			                    )                  
+			
+			  RETURN 
+			_fiterstringvalue & " " & _fiterbyvalue
+			```
+		displayFolder: 03: Growth Visual Measures
+		lineageTag: cfedb0bf-0852-4640-b476-89018a72db00
+
+	partition KPIs = m
+		mode: import
+		source =
+				let
+				    Source = Table.FromRows(Json.Document(Binary.Decompress(Binary.FromText("i44FAA==", BinaryEncoding.Base64), Compression.Deflate)), let _t = ((type nullable text) meta [Serialized.Text = true]) in type table [Column1 = _t]),
+				    #"Changed Type" = Table.TransformColumnTypes(Source,{{"Column1", type text}}),
+				    #"Removed Columns" = Table.RemoveColumns(#"Changed Type",{"Column1"})
+				in
+				    #"Removed Columns"
+
+	annotation PBI_ResultType = Table
+

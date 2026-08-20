@@ -1,0 +1,78 @@
+table Dim_Date
+	lineageTag: 0ec66141-43b5-44ce-be89-32af5116c3ba
+	dataCategory: Time
+
+	column Date
+		isKey
+		formatString: Long Date
+		lineageTag: ab9f8978-9654-461b-9f81-753bd4ed33d9
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [Date]
+
+		annotation SummarizationSetBy = Automatic
+
+	column Year
+		dataType: int64
+		formatString: 0
+		lineageTag: 3a9a698c-530e-48d7-9754-a699f8869026
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [Year]
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Month NO'
+		dataType: int64
+		formatString: 0
+		lineageTag: 82df05bd-be9f-47ea-9565-43c528c7fe08
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [Month NO]
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Month Name'
+		dataType: string
+		lineageTag: 2af61c56-93ca-487c-a0c4-b47da59d9f47
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [Month Name]
+		sortByColumn: 'Month NO'
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Week No'
+		formatString: 0
+		lineageTag: 31e7c2de-5767-42a6-a464-7a27eefa816d
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [Week No]
+
+		annotation SummarizationSetBy = Automatic
+
+	column Quater
+		formatString: 0
+		lineageTag: b6133364-bb74-4cad-900d-e3f6fe0cd7c9
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [Quater]
+
+		annotation SummarizationSetBy = Automatic
+
+	partition Dim_Date = calculated
+		mode: import
+		source = ```
+				
+				VAR _calender = CALENDAR(min('Fact_Combined Sales'[Date_Order]),max('Fact_Combined Sales'[Date_Order]))
+				Return 
+				ADDCOLUMNS(_calender,
+				"Year", YEAR([Date]),
+				"Month NO", MONTH([Date]), "Month Name" , Format([Date],"mmm yy"),
+				"Week No", WEEKNUM([Date]),
+				"Quater", QUARTER(([Date])
+				))
+				```
+
+	annotation PBI_Id = 3c4a51222a31443ea871515b0897c8fb
+

@@ -1,0 +1,49 @@
+table 'Param 01: Product'
+	lineageTag: aa6e0e41-8f8e-4e7d-93cb-fa441703f22d
+
+	column 'Param: Product'
+		lineageTag: 821571c3-a065-4ab9-b3cf-39648c0b25d9
+		summarizeBy: none
+		sourceColumn: [Value1]
+		sortByColumn: 'Param: Product Order'
+
+		relatedColumnDetails
+			groupByColumn: 'Param: Product Fields'
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Param: Product Fields'
+		isHidden
+		lineageTag: 8b4c9053-d43b-4d80-8086-c616eb0b0726
+		summarizeBy: none
+		sourceColumn: [Value2]
+		sortByColumn: 'Param: Product Order'
+
+		extendedProperty ParameterMetadata =
+				{
+				  "version": 3,
+				  "kind": 2
+				}
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Param: Product Order'
+		isHidden
+		formatString: 0
+		lineageTag: 763787c4-c206-497e-bc73-fb53ac67811e
+		summarizeBy: sum
+		sourceColumn: [Value3]
+
+		annotation SummarizationSetBy = Automatic
+
+	partition 'Param 01: Product' = calculated
+		mode: import
+		source =
+				{
+				    ("Category", NAMEOF('Dim_Categoty'[Category]), 0),
+				    ("Sub Category", NAMEOF('Dim_Categoty'[Sub_Category]), 1),
+				    ("Product", NAMEOF('Dim_Product'[Product_Name]), 2)
+				}
+
+	annotation PBI_Id = 0b6ca4485e0b48ed812528de67b3c9f7
+

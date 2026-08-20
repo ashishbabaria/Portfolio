@@ -1,0 +1,31 @@
+table Dim_Channel
+	lineageTag: f05643ba-1979-4cbc-83ed-8ca87e25c4b3
+
+	column Channel_ID
+		dataType: int64
+		formatString: 0
+		lineageTag: c9468f07-d532-4ef2-b0dc-8b66cf61b18c
+		summarizeBy: none
+		sourceColumn: Channel_ID
+
+		annotation SummarizationSetBy = Automatic
+
+	column Description
+		dataType: string
+		lineageTag: ba90a3c1-8967-4931-ba9e-97074710c4a0
+		summarizeBy: none
+		sourceColumn: Description
+
+		annotation SummarizationSetBy = Automatic
+
+	partition Dim_Channel = m
+		mode: import
+		source =
+				let
+				    Source = Table.FromRows(Json.Document(Binary.Decompress(Binary.FromText("i45WMlTSUXLMTazKz1OK1YlWMgJy/fN0izNLUpViYwE=", BinaryEncoding.Base64), Compression.Deflate)), let _t = ((type nullable text) meta [Serialized.Text = true]) in type table [Channel_ID = _t, Description = _t]),
+				    #"Changed Type" = Table.TransformColumnTypes(Source,{{"Channel_ID", Int64.Type}, {"Description", type text}})
+				in
+				    #"Changed Type"
+
+	annotation PBI_ResultType = Table
+

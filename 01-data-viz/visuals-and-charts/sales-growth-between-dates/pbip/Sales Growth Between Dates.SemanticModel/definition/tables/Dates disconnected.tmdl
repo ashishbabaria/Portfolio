@@ -1,0 +1,23 @@
+table 'Dates disconnected'
+	lineageTag: a329a16f-7c1f-4149-9d73-96053ca4d2ec
+
+	column Date
+		formatString: General Date
+		lineageTag: db3c2ec0-57d6-4ac6-8d38-57315d535cf6
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: Dim_Date[Date]
+
+		variation Variation
+			isDefault
+			relationship: c94ff842-ce64-4c05-bbd4-13539ba7ac14
+			defaultHierarchy: LocalDateTable_99f7d5e9-3443-4ac4-88dd-fbe206dae982.'Date Hierarchy'
+
+		annotation SummarizationSetBy = Automatic
+
+	partition 'Dates disconnected' = calculated
+		mode: import
+		source = VALUES(Dim_Date[Date])
+
+	annotation PBI_Id = c08f0c1cef644330883c04553ffc982e
+

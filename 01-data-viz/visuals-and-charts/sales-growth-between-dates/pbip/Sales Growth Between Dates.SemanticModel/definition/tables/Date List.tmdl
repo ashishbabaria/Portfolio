@@ -1,0 +1,52 @@
+table 'Date List'
+	lineageTag: b7be07d2-44c2-45b8-85c0-e4420b2984ab
+
+	column Date_Order
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: e3cbb887-9321-4e97-9120-a286caf46ebe
+		summarizeBy: none
+		sourceColumn: Date_Order
+
+		variation Variation
+			isDefault
+			relationship: 12c220eb-fa53-4c76-a1c4-e119038a9d00
+			defaultHierarchy: LocalDateTable_d956f0b2-72ed-4183-bc8e-a6647b5cf35c.'Date Hierarchy'
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column Date_Delivered
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: 838a0a32-b351-4328-b582-a6b4f03d7723
+		summarizeBy: none
+		sourceColumn: Date_Delivered
+
+		variation Variation
+			isDefault
+			relationship: 1f009a64-1409-4f0e-9521-87879009f5d8
+			defaultHierarchy: LocalDateTable_9493744d-7b0e-49e3-9d9e-065334fa7ccc.'Date Hierarchy'
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	partition 'Date List' = m
+		mode: import
+		source =
+				let
+				    Source = Table.Combine({#"Fact_On-Site Customer Orders", #"Fact_Amazon Vendor Sales"}),
+				    #"Removed Columns" = Table.RemoveColumns(Source,{"Order_Number", "SKU_Code", "Qty", "Discount_%", "Date_Packed", "Product_Id", "Product_Name", "Vendor_Id"})
+				in
+				    #"Removed Columns"
+
+	changedProperty = IsHidden
+
+	annotation PBI_ResultType = Table
+

@@ -1,0 +1,46 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/bookmark/2.1.0/schema.json",
+  "displayName": "Sub Categories",
+  "name": "0a07495b384627230bd2",
+  "options": {
+    "targetVisualNames": [],
+    "suppressData": true
+  },
+  "explorationState": {
+    "version": "1.3",
+    "activeSection": "4eebd6e1a151668fbf0c",
+    "sections": {
+      "4eebd6e1a151668fbf0c": {
+        "visualContainers": {},
+        "visualContainerGroups": {
+          "45e8679e8c181ce235fb": {
+            "isHidden": true
+          },
+          "58c0e2313e295cb1ed9d": {
+            "isHidden": false
+          },
+          "43b55bd3549b96826efc": {
+            "isHidden": true
+          }
+        }
+      }
+    },
+    "objects": {
+      "merge": {
+        "outspacePane": [
+          {
+            "properties": {
+              "expanded": {
+                "expr": {
+                  "Literal": {
+                    "Value": "true"
+                  }
+                }
+              }
+            }
+          }
+        ]
+      }
+    }
+  }
+}

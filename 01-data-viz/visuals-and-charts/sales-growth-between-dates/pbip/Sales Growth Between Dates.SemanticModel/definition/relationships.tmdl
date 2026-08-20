@@ -1,0 +1,51 @@
+relationship AutoDetected_330fba50-fb92-426e-aa25-f9ae76d3fd31
+	crossFilteringBehavior: bothDirections
+	fromColumn: Dim_Product.Sub_Category
+	toColumn: Dim_Categoty.Sub_Category
+
+relationship AutoDetected_6e178c9e-f1ff-4632-a726-e4f2524fd92d
+	crossFilteringBehavior: bothDirections
+	fromColumn: Dim_Product.Brand
+	toColumn: Dim_Brand.Brand
+
+relationship 12c220eb-fa53-4c76-a1c4-e119038a9d00
+	joinOnDateBehavior: datePartOnly
+	fromColumn: 'Date List'.Date_Order
+	toColumn: LocalDateTable_d956f0b2-72ed-4183-bc8e-a6647b5cf35c.Date
+
+relationship 1f009a64-1409-4f0e-9521-87879009f5d8
+	joinOnDateBehavior: datePartOnly
+	fromColumn: 'Date List'.Date_Delivered
+	toColumn: LocalDateTable_9493744d-7b0e-49e3-9d9e-065334fa7ccc.Date
+
+relationship e68217c2-e85b-4e30-aeed-f9c969a0c8e1
+	joinOnDateBehavior: datePartOnly
+	fromColumn: 'Fact_Combined Sales'.Date_Delivered
+	toColumn: LocalDateTable_7248fdb7-e70f-461b-a3dc-b56ee2644a02.Date
+
+relationship AutoDetected_2f7f15df-8075-4eca-8435-79bceb627473
+	fromColumn: 'Fact_Combined Sales'.Product_Name
+	toColumn: Dim_Product.Product_Name
+
+relationship AutoDetected_48327e41-d56d-4a33-b640-96f566d9c719
+	fromColumn: 'Fact_Combined Sales'.Vendor_Id
+	toColumn: Dim_Vendor.Vendor_Id
+
+relationship 6527e930-d364-c4fe-b1f2-7bccf102569a
+	fromColumn: 'Fact_Combined Sales'.Channle_ID
+	toColumn: Dim_Channel.Channel_ID
+
+relationship 19aa33f8-7c6e-82a7-4c55-13e81f7bd9d2
+	fromColumn: 'Fact_Combined Sales'.Date_Order
+	toColumn: Dim_Date.Date
+
+relationship 7683b118-0539-433d-ad8e-8ed0f37af0c2
+	joinOnDateBehavior: datePartOnly
+	fromColumn: 'Date From dates'.Date
+	toColumn: LocalDateTable_e8ba7ef7-e2c2-4b78-9ae5-a3320aa27190.Date
+
+relationship c94ff842-ce64-4c05-bbd4-13539ba7ac14
+	joinOnDateBehavior: datePartOnly
+	fromColumn: 'Dates disconnected'.Date
+	toColumn: LocalDateTable_99f7d5e9-3443-4ac4-88dd-fbe206dae982.Date
+

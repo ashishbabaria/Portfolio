@@ -1,0 +1,23 @@
+table 'Date From dates'
+	lineageTag: 28bf6a2f-3fc5-4fa1-bfd9-b33c73267653
+
+	column Date
+		formatString: General Date
+		lineageTag: 64cd324e-4a37-4f03-84a1-39112da64028
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: Dim_Date[Date]
+
+		variation Variation
+			isDefault
+			relationship: 7683b118-0539-433d-ad8e-8ed0f37af0c2
+			defaultHierarchy: LocalDateTable_e8ba7ef7-e2c2-4b78-9ae5-a3320aa27190.'Date Hierarchy'
+
+		annotation SummarizationSetBy = Automatic
+
+	partition 'Date From dates' = calculated
+		mode: import
+		source = VALUES('Dim_Date'[Date])
+
+	annotation PBI_Id = 91e1ffbfa17e4a039ee85d53d2d1123e
+

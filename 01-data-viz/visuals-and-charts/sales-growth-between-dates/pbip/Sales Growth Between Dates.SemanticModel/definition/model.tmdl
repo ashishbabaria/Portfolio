@@ -1,0 +1,35 @@
+model Model
+	culture: en-US
+	defaultPowerBIDataSourceVersion: powerBI_V3
+	sourceQueryCulture: en-US
+	dataAccessOptions
+		legacyRedirects
+		returnErrorValuesAsNull
+
+annotation PBI_QueryOrder = ["Fact_Amazon Vendor Sales","Dim_Product","Fact_On-Site Customer Orders","Dim_Categoty","Dim_Vendor","Dim_Brand","KPIs","Date List","Fact_Combined Sales","Fact_On-Site Customer Orders (2)","Dim_Channel"]
+
+annotation __PBI_TimeIntelligenceEnabled = 1
+
+annotation PBI_ProTooling = ["DevMode"]
+
+ref table DateTableTemplate_0ab3f999-bda1-4671-a2b8-06a1a4fff46f
+ref table Dim_Product
+ref table Dim_Categoty
+ref table Dim_Vendor
+ref table Dim_Brand
+ref table KPIs
+ref table 'Date List'
+ref table LocalDateTable_d956f0b2-72ed-4183-bc8e-a6647b5cf35c
+ref table LocalDateTable_9493744d-7b0e-49e3-9d9e-065334fa7ccc
+ref table Dim_Date
+ref table 'Param 01: Product'
+ref table 'Date From dates'
+ref table 'Fact_Combined Sales'
+ref table LocalDateTable_7248fdb7-e70f-461b-a3dc-b56ee2644a02
+ref table Dim_Channel
+ref table LocalDateTable_e8ba7ef7-e2c2-4b78-9ae5-a3320aa27190
+ref table 'Dates disconnected'
+ref table LocalDateTable_99f7d5e9-3443-4ac4-88dd-fbe206dae982
+
+ref cultureInfo en-US
+

@@ -1,0 +1,22 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/bookmarksMetadata/1.0.0/schema.json",
+  "items": [
+    {
+      "name": "db41e771c6e4eeb49041",
+      "displayName": "Top3",
+      "children": [
+        "ae3af9ac5d91be2c2db1",
+        "0a07495b384627230bd2",
+        "968532880905f6a770e8"
+      ]
+    },
+    {
+      "name": "1d5e33c577c8e55b59f6",
+      "displayName": "Filter pan",
+      "children": [
+        "4a3d9ec027edf4ec7cc9",
+        "97979362482a74c714a8"
+      ]
+    }
+  ]
+}

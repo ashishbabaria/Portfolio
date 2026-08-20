@@ -1,0 +1,36 @@
+table Dim_Categoty
+	lineageTag: e786ed02-bf36-4e39-8ebf-dde14b1667a7
+
+	column Category
+		dataType: string
+		lineageTag: 13fb9991-2ac9-4cc7-b051-4696df3b8705
+		summarizeBy: none
+		sourceColumn: Category
+
+		annotation SummarizationSetBy = Automatic
+
+	column Sub_Category
+		dataType: string
+		lineageTag: b53743fc-a337-42dd-bd62-b59786ae9756
+		summarizeBy: none
+		sourceColumn: Sub_Category
+
+		annotation SummarizationSetBy = Automatic
+
+	partition Dim_Categoty = m
+		mode: import
+		source =
+				let
+				    Source = Excel.Workbook(File.Contents("C:\Data\Sales-Growth-Sample-Data.xlsx"), null, false),
+				    #"Product master_sheet" = Source{[Item="Product master",Kind="Sheet"]}[Data],
+				    FilterNullAndWhitespace = each List.Select(_, each _ <> null and (not (_ is text) or Text.Trim(_) <> "")),
+				    #"Removed Bottom Rows" = Table.RemoveLastN(#"Product master_sheet", each try List.IsEmpty(List.Skip(FilterNullAndWhitespace(Record.FieldValues(_)), 1)) otherwise false),
+				    #"Promoted Headers" = Table.PromoteHeaders(#"Removed Bottom Rows", [PromoteAllScalars=true]),
+				    #"Changed Type" = Table.TransformColumnTypes(#"Promoted Headers",{{"Product_Code", type text}, {"Product_Name", type text}, {"Brand", type text}, {"Vendor_Price", Int64.Type}, {"Customer_Price", Int64.Type}, {"Category", type text}, {"Sub_Category", type text}}),
+				    #"Removed Columns" = Table.RemoveColumns(#"Changed Type",{"Product_Code", "Product_Name", "Brand", "Vendor_Price", "Customer_Price"}),
+				    #"Removed Duplicates" = Table.Distinct(#"Removed Columns")
+				in
+				    #"Removed Duplicates"
+
+	annotation PBI_ResultType = Table
+
