@@ -1,0 +1,21 @@
+# ---- Power BI (PBIP) ----
+# Local, machine-specific and cache files — should never be committed.
+**/.pbi/localSettings.json
+**/.pbi/cache.abf
+**/.pbi/editorSettings.json
+
+# Legacy binary Power BI files (keep the repo source-only / PBIP)
+*.pbix
+
+# ---- Windows ----
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# ---- OneDrive / Office temp files ----
+~$*
+*.tmp
+
+# ---- macOS (in case of cross-platform work) ----
+.DS_Store
