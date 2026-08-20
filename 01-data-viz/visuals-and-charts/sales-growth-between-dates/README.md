@@ -81,6 +81,26 @@ plain, readable text.
 
 ---
 
+## Run it locally
+
+This project reads its data from an Excel file in the `data/` folder, via a
+Power Query parameter called **`DataFolder`**. Because Power BI stores an
+absolute path, you set this once after cloning:
+
+1. Open `pbip/Sales Growth Between Dates.pbip` in **Power BI Desktop**
+   (with the *Power BI Project (.pbip)* preview feature enabled).
+2. Go to **Home → Transform data → Manage Parameters**.
+3. Set **`DataFolder`** to the full path of this project's `data` folder, e.g.
+   `...\sales-growth-between-dates\data`
+4. **Close & Apply.** The visuals populate and the date slider is live.
+
+![Setting the DataFolder parameter](./media/datafolder-parameter.png)
+
+> The repo ships with sample electronics-sales data, so it runs out of the box
+> once `DataFolder` points at the `data` folder.
+
+---
+
 ## Credits & related work
 
 Originally shared as a free PBIX in 2024, and later featured in a full tutorial by
