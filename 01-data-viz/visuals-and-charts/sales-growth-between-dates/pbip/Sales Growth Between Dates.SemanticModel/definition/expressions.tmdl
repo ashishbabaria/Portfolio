@@ -1,6 +1,6 @@
 expression 'Fact_On-Site Customer Orders (2)' =
 		let
-		    Source = Excel.Workbook(File.Contents("C:\Data\Sales-Growth-Sample-Data.xlsx"), null, false),
+		    Source = Excel.Workbook(File.Contents(DataFolder & "\Sales-Growth-Sample-Data.xlsx"), null, true),
 		    #"On-Site Customer Orders_sheet" = Source{[Item="On-Site Customer Orders",Kind="Sheet"]}[Data],
 		    FilterNullAndWhitespace = each List.Select(_, each _ <> null and (not (_ is text) or Text.Trim(_) <> "")),
 		    #"Removed Bottom Rows" = Table.RemoveLastN(#"On-Site Customer Orders_sheet", each try List.IsEmpty(List.Skip(FilterNullAndWhitespace(Record.FieldValues(_)), 1)) otherwise false),
@@ -21,7 +21,7 @@ expression 'Fact_On-Site Customer Orders (2)' =
 
 expression 'Fact_Amazon Vendor Sales' =
 		let
-		    Source = Excel.Workbook(File.Contents("C:\Data\Sales-Growth-Sample-Data.xlsx"), null, true),
+		    Source = Excel.Workbook(File.Contents(DataFolder & "\Sales-Growth-Sample-Data.xlsx"), null, true),
 		    #"Amazon Vendor Sales_Sheet" = Source{[Item="Amazon Vendor Sales",Kind="Sheet"]}[Data],
 		    #"Promoted Headers" = Table.PromoteHeaders(#"Amazon Vendor Sales_Sheet", [PromoteAllScalars=true]),
 		    #"Changed Type" = Table.TransformColumnTypes(#"Promoted Headers",{{"Date_Order", type date}, {"Date_Packed", type date}, {"Date_Delivered", type date}, {"Order_Number", type text}, {"Product_Id", type text}, {"Qty", Int64.Type}, {"Product_Name", type text}, {"Vendor_Id", type text}})
@@ -35,7 +35,7 @@ expression 'Fact_Amazon Vendor Sales' =
 
 expression 'Fact_On-Site Customer Orders' =
 		let
-		    Source = Excel.Workbook(File.Contents("C:\Data\Sales-Growth-Sample-Data.xlsx"), null, false),
+		    Source = Excel.Workbook(File.Contents(DataFolder & "\Sales-Growth-Sample-Data.xlsx"), null, true),
 		    #"On-Site Customer Orders_sheet" = Source{[Item="On-Site Customer Orders",Kind="Sheet"]}[Data],
 		    FilterNullAndWhitespace = each List.Select(_, each _ <> null and (not (_ is text) or Text.Trim(_) <> "")),
 		    #"Removed Bottom Rows" = Table.RemoveLastN(#"On-Site Customer Orders_sheet", each try List.IsEmpty(List.Skip(FilterNullAndWhitespace(Record.FieldValues(_)), 1)) otherwise false),
@@ -46,4 +46,13 @@ expression 'Fact_On-Site Customer Orders' =
 	lineageTag: f8f4040a-6f7e-4577-b281-5dcfad4b89ef
 
 	annotation PBI_ResultType = Table
+
+	annotation PBI_NavigationStepName = Navigation
+
+expression DataFolder = "F:\Github Cloned Repos\Portfolio\01-data-viz\visuals-and-charts\sales-growth-between-dates\data" meta [IsParameterQuery=true, Type="Text", IsParameterQueryRequired=true]
+	lineageTag: 6962610d-7534-4d12-931b-4985ccc81f52
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Text
 

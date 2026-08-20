@@ -1,0 +1,11 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/gitIntegration/platformProperties/2.0.0/schema.json",
+  "metadata": {
+    "type": "SemanticModel",
+    "displayName": "Sales Growth Between Dates"
+  },
+  "config": {
+    "version": "2.0",
+    "logicalId": "78897d38-b9ca-40b7-9c90-eb0c599177b9"
+  }
+}

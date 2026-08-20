@@ -1,0 +1,11 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/gitIntegration/platformProperties/2.0.0/schema.json",
+  "metadata": {
+    "type": "Report",
+    "displayName": "Sales Growth Between Dates"
+  },
+  "config": {
+    "version": "2.0",
+    "logicalId": "152bdb9e-b8df-4176-82f5-969693042412"
+  }
+}

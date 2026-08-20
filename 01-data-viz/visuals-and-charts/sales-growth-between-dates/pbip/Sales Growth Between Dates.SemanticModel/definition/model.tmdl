@@ -6,7 +6,7 @@ model Model
 		legacyRedirects
 		returnErrorValuesAsNull
 
-annotation PBI_QueryOrder = ["Fact_Amazon Vendor Sales","Dim_Product","Fact_On-Site Customer Orders","Dim_Categoty","Dim_Vendor","Dim_Brand","KPIs","Date List","Fact_Combined Sales","Fact_On-Site Customer Orders (2)","Dim_Channel"]
+annotation PBI_QueryOrder = ["Fact_Amazon Vendor Sales","Dim_Product","Fact_On-Site Customer Orders","Dim_Categoty","Dim_Vendor","Dim_Brand","KPIs","Date List","Fact_On-Site Customer Orders (2)","Fact_Combined Sales","Dim_Channel","DataFolder"]
 
 annotation __PBI_TimeIntelligenceEnabled = 1
 
