@@ -9,10 +9,6 @@ seven series, and most of the DAX isn't calculation at all — it's *stagecraft*
 
 ![Sales Growth Between Dates](./media/cover.png)
 
-> _Add `cover.png` (and an optional `demo.gif`) to the `media/` folder — the image above
-> renders once the file is in place._
-
----
 
 ## The effect
 
