@@ -1,0 +1,100 @@
+table dim_date
+	lineageTag: 05b5b6c7-820f-4854-b317-e43f490c95b1
+
+	column date
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: 4aba072b-a7de-4fa5-950b-4eea97c6193c
+		summarizeBy: none
+		sourceColumn: date
+
+		variation Variation
+			isDefault
+			relationship: ef8a957e-bfb7-4b7c-835a-4d6bb77e1e91
+			defaultHierarchy: LocalDateTable_28a53772-e278-440e-9331-79e3cba4e2e9.'Date Hierarchy'
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column fiscal_year
+		dataType: int64
+		formatString: 0
+		lineageTag: cc3d2647-09d3-481c-9ed4-22d4f7eb1435
+		summarizeBy: none
+		sourceColumn: fiscal_year
+
+		annotation SummarizationSetBy = User
+
+	column quarter
+		dataType: string
+		lineageTag: 7d6a220f-f5a4-448c-bda9-a9c8b5894c96
+		summarizeBy: none
+		sourceColumn: quarter
+		sortByColumn: quarter_no
+
+		changedProperty = SortByColumn
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'month no' = MONTH(dim_date[date])
+		formatString: 0
+		lineageTag: 2d90bf03-e8aa-4685-828d-f39a7b7dcf95
+		summarizeBy: sum
+
+		annotation SummarizationSetBy = Automatic
+
+	column month_name = FORMAT(dim_date[date],"MMM")
+		lineageTag: 5eda59bf-4f8a-42ef-baf0-35e6a0004b2c
+		summarizeBy: none
+		sortByColumn: 'Fiscal Month No'
+
+		changedProperty = SortByColumn
+
+		annotation SummarizationSetBy = Automatic
+
+	column month_year = FORMAT( dim_date[date],"MMM") & FORMAT(dim_date[date],"'YY")
+		lineageTag: d6c40b5c-b497-4c3f-b53a-e3efff50c185
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Fiscal Month No' =
+			
+			if(dim_date[month no]<=3, dim_date[month no]+9, dim_date[month no]-3)
+		formatString: 0
+		lineageTag: bd7a6d23-8996-48a1-a646-ba5ce76c7b2d
+		summarizeBy: sum
+
+		annotation SummarizationSetBy = Automatic
+
+	column quarter_no = if( dim_date[Fiscal Month No]<=9, QUARTER(dim_date[date])-1, QUARTER(dim_date[date])+3)
+		formatString: 0
+		lineageTag: dd377fde-4e1e-4019-a4ff-52cda8753396
+		summarizeBy: sum
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Quarter Year No' = dim_date[quarter] & CONCATENATE("'",RIGHT(dim_date[fiscal_year],2))
+		lineageTag: dc8344c8-c397-4465-874f-bb74918dc34b
+		summarizeBy: none
+		sortByColumn: fiscal_year
+
+		changedProperty = SortByColumn
+
+		annotation SummarizationSetBy = Automatic
+
+	partition dim_date = m
+		mode: import
+		source =
+				let
+				    Source = Csv.Document(File.Contents(DataFolder & "\dim_date.csv"),[Delimiter=",", Columns=3, Encoding=65001, QuoteStyle=QuoteStyle.None]),
+				    #"Promoted Headers" = Table.PromoteHeaders(Source, [PromoteAllScalars=true]),
+				    #"Changed Type" = Table.TransformColumnTypes(#"Promoted Headers",{{"date", type date}, {"fiscal_year", Int64.Type}, {"quarter", type text}})
+				in
+				    #"Changed Type"
+
+	annotation PBI_ResultType = Table
+
+	annotation PBI_NavigationStepName = Navigation
+

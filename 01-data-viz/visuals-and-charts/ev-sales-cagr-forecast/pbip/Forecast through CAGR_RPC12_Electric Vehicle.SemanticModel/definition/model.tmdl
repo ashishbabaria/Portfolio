@@ -1,0 +1,30 @@
+model Model
+	culture: en-US
+	defaultPowerBIDataSourceVersion: powerBI_V3
+	sourceQueryCulture: en-US
+	dataAccessOptions
+		legacyRedirects
+		returnErrorValuesAsNull
+
+annotation PBI_QueryOrder = ["dim_date","electric_vehicle_sales_by_state","KPIs","dim_vehicle_Category","DataFolder"]
+
+annotation __PBI_TimeIntelligenceEnabled = 1
+
+annotation PBI_ProTooling = ["DevMode"]
+
+ref table dim_date
+ref table DateTableTemplate_885b7533-161d-4c1e-b687-8f8794d80e79
+ref table LocalDateTable_28a53772-e278-440e-9331-79e3cba4e2e9
+ref table electric_vehicle_sales_by_state
+ref table KPIs
+ref table dim_vehicle_Category
+ref table EV_Sales_Forecast
+ref table dim_states
+ref table 'EV_Sales_Forecast BOTH Filters'
+ref table 'Param 01: No. of Forecast Years'
+ref table EV_Sales_Forecast_Only_State_Filter
+ref table EV_Sales_Forecast_Only_Vehicle_Category_Filter
+ref table dim_years
+
+ref cultureInfo en-US
+

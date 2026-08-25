@@ -1,0 +1,64 @@
+table electric_vehicle_sales_by_state
+	lineageTag: c7aa6c21-d4e0-494f-a362-67f9c066de69
+
+	column date
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: 0be24fa0-b97f-4cd0-b0f4-5ca243456867
+		summarizeBy: none
+		sourceColumn: date
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column state
+		dataType: string
+		lineageTag: 7dd76b89-60e7-4003-b2a7-5def90142601
+		summarizeBy: none
+		sourceColumn: state
+
+		annotation SummarizationSetBy = Automatic
+
+	column vehicle_category
+		dataType: string
+		lineageTag: 1e36f9a7-8af7-4640-ac56-dd2bcc8511f0
+		summarizeBy: none
+		sourceColumn: vehicle_category
+
+		annotation SummarizationSetBy = Automatic
+
+	column electric_vehicles_sold
+		dataType: int64
+		formatString: 0
+		lineageTag: 5c023003-cd01-44fa-99c0-83507124cded
+		summarizeBy: sum
+		sourceColumn: electric_vehicles_sold
+
+		annotation SummarizationSetBy = Automatic
+
+	column total_vehicles_sold
+		dataType: int64
+		formatString: 0
+		lineageTag: 1d881fbc-eaf8-49e6-a448-f3ce8e33df3e
+		summarizeBy: sum
+		sourceColumn: total_vehicles_sold
+
+		annotation SummarizationSetBy = Automatic
+
+	partition electric_vehicle_sales_by_state = m
+		mode: import
+		source =
+				let
+				    Source = Csv.Document(File.Contents(DataFolder & "\electric_vehicle_sales_by_state.csv"),[Delimiter=",", Columns=5, Encoding=65001, QuoteStyle=QuoteStyle.None]),
+				    #"Promoted Headers" = Table.PromoteHeaders(Source, [PromoteAllScalars=true]),
+				    #"Changed Type" = Table.TransformColumnTypes(#"Promoted Headers",{{"date", type date}, {"state", type text}, {"vehicle_category", type text}, {"electric_vehicles_sold", Int64.Type}, {"total_vehicles_sold", Int64.Type}}),
+				    #"Replaced Value" = Table.ReplaceValue(#"Changed Type","Andaman & Nicobar Island","Andaman & Nicobar",Replacer.ReplaceText,{"state"}),
+				    #"Trimmed Text" = Table.TransformColumns(#"Replaced Value",{{"state", Text.Trim, type text}, {"vehicle_category", Text.Trim, type text}})
+				in
+				    #"Trimmed Text"
+
+	annotation PBI_ResultType = Table
+
+	annotation PBI_NavigationStepName = Navigation
+

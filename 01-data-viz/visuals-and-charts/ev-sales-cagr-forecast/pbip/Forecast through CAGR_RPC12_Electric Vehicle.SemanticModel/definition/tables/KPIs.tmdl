@@ -1,0 +1,496 @@
+table KPIs
+	lineageTag: fd0c08ba-b110-4fc7-8800-3cc022569428
+
+	measure 'Total EV Sold States' = sum(electric_vehicle_sales_by_state[electric_vehicles_sold])
+		displayFolder: 00: Basic KPIs
+		lineageTag: 5bb9c204-2caf-410f-a75f-180e0efec3ac
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'CAGR States EV Sales' =
+			
+			
+			VAR Lastyear = MAX(dim_date[fiscal_year])
+			VAR Firstyear = MIN(dim_date[fiscal_year])
+			VAR Lastactualsales = CALCULATE([Total EV Sold States], dim_date[fiscal_year] = Lastyear)
+			VAR Firstactualsales = CALCULATE([Total EV Sold States], dim_date[fiscal_year] = Firstyear)
+			VAR no_of_years = Lastyear- Firstyear
+			RETURN
+			IF(
+			    Firstactualsales > 0,
+			    ( (Lastactualsales / Firstactualsales) ^ (1 / no_of_years) ) - 1,
+			    BLANK()
+			)
+		formatString: 0.00%;-0.00%;0.00%
+		displayFolder: 00: Basic KPIs
+		lineageTag: 185e082a-49ec-43cc-a919-13f70f451440
+
+	measure 'Dynamic CAGR BOTH filter' = ```
+			
+			
+			VAR ActualData =
+			    SELECTCOLUMNS(
+			        SUMMARIZE(
+			            'electric_vehicle_sales_by_state',
+			            'dim_date'[fiscal_year], 
+			            'electric_vehicle_sales_by_state'[state], 
+			            'electric_vehicle_sales_by_state'[vehicle_category], 
+			            "Total EV Sold", SUM('electric_vehicle_sales_by_state'[electric_vehicles_sold])
+			        ),
+			        "fiscal_year", 'dim_date'[fiscal_year],
+			        "state", 'electric_vehicle_sales_by_state'[state],
+			        "vehicle_category", 'electric_vehicle_sales_by_state'[vehicle_category],
+			        "Total EV Sold", [Total EV Sold]
+			    )
+			
+			-- Get First and Last Actual Sales Year
+			VAR First_Year = MINX(VALUES('dim_date'[fiscal_year]), [fiscal_year])
+			VAR Last_Year = MAXX(VALUES('dim_date'[fiscal_year]), [fiscal_year])
+			
+			-- Get Sales for First and Last Year
+			VAR SalesFirstYear =
+			    SUMX(
+			        FILTER(
+			            ActualData, 
+			            [fiscal_year] = First_Year && 
+			            [state] IN VALUES('electric_vehicle_sales_by_state'[state]) &&
+			            [vehicle_category] IN VALUES('electric_vehicle_sales_by_state'[vehicle_category])
+			        ),
+			        [Total EV Sold]
+			    )
+			
+			VAR SalesLastYear =
+			    SUMX(
+			        FILTER(
+			            ActualData, 
+			            [fiscal_year] = Last_Year && 
+			            [state] IN VALUES('electric_vehicle_sales_by_state'[state]) &&
+			            [vehicle_category] IN VALUES('electric_vehicle_sales_by_state'[vehicle_category])
+			        ),
+			        [Total EV Sold]
+			    )
+			-- Calculate Dynamic CAGR from ActualData
+			VAR DynamicCAGR = 
+			    IF(
+			        SalesFirstYear > 0 && Last_Year > First_Year,
+			        ((SalesLastYear / SalesFirstYear) ^ (1 / (Last_Year - First_Year))) - 1,
+			        BLANK()
+			    )
+			
+			RETURN DynamicCAGR
+			```
+		formatString: 0.00%;-0.00%;0.00%
+		displayFolder: 00: Basic KPIs
+		lineageTag: 37294d09-d131-4972-b8ab-f85222f198b6
+
+	measure 'Debug Growth both filters' =
+			
+			
+			VAR EVsold2024 = CALCULATE( sum( 'EV_Sales_Forecast BOTH Filters'[Total EV Sold]), 'EV_Sales_Forecast BOTH Filters'[fiscal_year] = 2024)
+			VAR EVsold2025 = CALCULATE( sum( 'EV_Sales_Forecast BOTH Filters'[Total EV Sold]), 'EV_Sales_Forecast BOTH Filters'[fiscal_year] = 2025)
+			
+			RETURN DIVIDE( EVsold2025,EVsold2024,0) -1
+		formatString: 0.00%;-0.00%;0.00%
+		displayFolder: 99: Debug
+		lineageTag: bd2be381-a742-4d3f-83b4-6da554114aad
+
+	measure 'Dynamic CAGR_State' = ```
+			
+			
+			VAR ActualData =
+			    SELECTCOLUMNS(
+			        SUMMARIZE(
+			            'electric_vehicle_sales_by_state',
+			            'dim_date'[fiscal_year], 
+			            'electric_vehicle_sales_by_state'[state], 
+			            "Total EV Sold", SUM('electric_vehicle_sales_by_state'[electric_vehicles_sold])
+			        ),
+			        "fiscal_year", 'dim_date'[fiscal_year],
+			        "state", 'electric_vehicle_sales_by_state'[state],
+			        "Total EV Sold", [Total EV Sold]
+			    )
+			
+			-- Get First and Last Actual Sales Year
+			VAR First_Year = MINX(VALUES('dim_date'[fiscal_year]), [fiscal_year])
+			VAR Last_Year = MAXX(VALUES('dim_date'[fiscal_year]), [fiscal_year])
+			
+			-- Get Sales for First and Last Year
+			VAR SalesFirstYear =
+			    SUMX(
+			        FILTER(
+			            ActualData, 
+			            [fiscal_year] = First_Year && 
+			            [state] IN VALUES('electric_vehicle_sales_by_state'[state])
+			        ),
+			        [Total EV Sold]
+			    )
+			
+			VAR SalesLastYear =
+			    SUMX(
+			        FILTER(
+			            ActualData, 
+			            [fiscal_year] = Last_Year && 
+			            [state] IN VALUES('electric_vehicle_sales_by_state'[state])
+			        ),
+			        [Total EV Sold]
+			    )
+			
+			-- Calculate CAGR for State
+			VAR CAGR_State =
+			    IF(
+			        SalesFirstYear > 0 && Last_Year > First_Year,
+			        ((SalesLastYear / SalesFirstYear) ^ (1 / (Last_Year - First_Year))) - 1,
+			        BLANK()
+			    )
+			
+			RETURN CAGR_State
+			
+			```
+		formatString: 0.00%;-0.00%;0.00%
+		displayFolder: 00: Basic KPIs
+		lineageTag: ce3e4e37-4f7e-43f8-bc6c-a713ab5ae258
+
+	measure 'Dynamic CAGR_VehicleCategory' = ```
+			
+			
+			VAR ActualData =
+			    SELECTCOLUMNS(
+			        SUMMARIZE(
+			            'electric_vehicle_sales_by_state',
+			            'dim_date'[fiscal_year], 
+			            'electric_vehicle_sales_by_state'[vehicle_category], 
+			            "Total EV Sold", SUM('electric_vehicle_sales_by_state'[electric_vehicles_sold])
+			        ),
+			        "fiscal_year", 'dim_date'[fiscal_year],
+			        "vehicle_category", 'electric_vehicle_sales_by_state'[vehicle_category],
+			        "Total EV Sold", [Total EV Sold]
+			    )
+			
+			-- Get First and Last Actual Sales Year
+			VAR First_Year = MINX(VALUES('dim_date'[fiscal_year]), [fiscal_year])
+			VAR Last_Year = MAXX(VALUES('dim_date'[fiscal_year]), [fiscal_year])
+			
+			-- Get Sales for First and Last Year
+			VAR SalesFirstYear =
+			    SUMX(
+			        FILTER(
+			            ActualData, 
+			            [fiscal_year] = First_Year && 
+			            [vehicle_category] IN VALUES('electric_vehicle_sales_by_state'[vehicle_category])
+			        ),
+			        [Total EV Sold]
+			    )
+			
+			VAR SalesLastYear =
+			    SUMX(
+			        FILTER(
+			            ActualData, 
+			            [fiscal_year] = Last_Year && 
+			            [vehicle_category] IN VALUES('electric_vehicle_sales_by_state'[vehicle_category])
+			        ),
+			        [Total EV Sold]
+			    )
+			
+			-- Calculate CAGR for Vehicle Category
+			VAR CAGR_VehicleCategory =
+			    IF(
+			        SalesFirstYear > 0 && Last_Year > First_Year,
+			        ((SalesLastYear / SalesFirstYear) ^ (1 / (Last_Year - First_Year))) - 1,
+			        BLANK()
+			    )
+			
+			RETURN CAGR_VehicleCategory
+			
+			```
+		formatString: 0.00%;-0.00%;0.00%
+		displayFolder: 00: Basic KPIs
+		lineageTag: f371b73d-c971-4bca-8fd0-b5cc76e7c12a
+
+	measure 'Debug Growth state filters' =
+			
+			
+			VAR EVsold2024 = CALCULATE( sum( 'EV_Sales_Forecast_Only_State_Filter'[Total EV Sold]), 'EV_Sales_Forecast_Only_State_Filter'[fiscal_year] = 2024)
+			VAR EVsold2025 = CALCULATE( sum( 'EV_Sales_Forecast_Only_State_Filter'[Total EV Sold]), 'EV_Sales_Forecast_Only_State_Filter'[fiscal_year] = 2025)
+			
+			RETURN DIVIDE( EVsold2025,EVsold2024,0) -1
+		formatString: 0.00%;-0.00%;0.00%
+		displayFolder: 99: Debug
+		lineageTag: fe6cad5f-8571-4f1c-85af-f168151b8c33
+
+	measure 'Debug Growth Vehcile Category filters' =
+			
+			
+			VAR EVsold2024 = CALCULATE( sum( 'EV_Sales_Forecast_Only_Vehicle_Category_Filter'[Total EV Sold]), 'EV_Sales_Forecast_Only_Vehicle_Category_Filter'[fiscal_year] = 2024)
+			VAR EVsold2025 = CALCULATE( sum( 'EV_Sales_Forecast_Only_Vehicle_Category_Filter'[Total EV Sold]), 'EV_Sales_Forecast_Only_Vehicle_Category_Filter'[fiscal_year] = 2025)
+			
+			RETURN DIVIDE( EVsold2025,EVsold2024,0) -1
+		formatString: 0.00%;-0.00%;0.00%
+		displayFolder: 99: Debug
+		lineageTag: 86128f35-84b1-4cf7-83a8-f3f909af53c4
+
+	measure 'EV sold wiht forecast' = ```
+			
+			
+			VAR _nofilter = sum( EV_Sales_Forecast[Total EV Sold])
+			VAR _bohtfilter = sum( 'EV_Sales_Forecast BOTH Filters'[Total EV Sold])
+			VAR _statefilter = sum(EV_Sales_Forecast_Only_State_Filter[Total EV Sold])
+			VAR _Vehiclecatfilter = sum( EV_Sales_Forecast_Only_Vehicle_Category_Filter[Total EV Sold])
+			
+			RETURN SWITCH( TRUE(),
+			                ISFILTERED(dim_states[state]) && ISFILTERED( dim_vehicle_Category[Decription]) , _bohtfilter,
+			                ISFILTERED(dim_states[state])  && NOT ISFILTERED(dim_vehicle_Category[Decription]) , _statefilter,
+			                NOT ISFILTERED(dim_states[state])  && ISFILTERED(dim_vehicle_Category[Decription]) , _Vehiclecatfilter,
+			                NOT ISFILTERED(dim_states[state])  && NOT ISFILTERED(dim_vehicle_Category[Decription]), _nofilter
+			            )
+			
+			```
+		formatString: 0
+		displayFolder: 00: Basic KPIs
+		lineageTag: e220ffe7-9fad-4b09-85f3-0f78932fa50f
+
+	measure 'Line 1: Actual_Sales_Line' = ```
+			
+			VAR LastActualYear = CALCULATE(
+			    MAX('dim_date'[fiscal_year]), 
+			    ALL('dim_date')
+			) 
+			VAR TotalEVSold = [EV sold wiht forecast]
+			VAR CurrentYear = SELECTEDVALUE(dim_years[fiscal_year])
+			RETURN 
+			IF(
+			    CurrentYear<= LastActualYear, 
+			    TotalEVSold,
+			    BLANK()
+			)
+			```
+		displayFolder: 01: Line Chart
+		lineageTag: bce91350-3668-45b6-b348-80d68b7a2415
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Line 2: Forecast_Sales_Line' = ```
+			
+			VAR LastActualYear = CALCULATE(
+			    MAX('dim_date'[fiscal_year]), 
+			    ALL('dim_date')
+			) 
+			VAR TotalEVSold = [EV sold wiht forecast]
+			VAR CurrentYear = SELECTEDVALUE('EV_Sales_Forecast'[fiscal_year])
+			RETURN 
+			IF(
+			    AND (CurrentYear >= LastActualYear, CurrentYear <= [Last Year of forecast]),
+			    TotalEVSold,
+			    BLANK()
+			)
+			```
+		displayFolder: 01: Line Chart
+		lineageTag: 0c4807a0-9abf-4895-8b9e-68aca9183b55
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Last Year of forecast' = ```
+			
+			
+			VAR LastActualYear = CALCULATE(
+			    MAX('dim_date'[fiscal_year]), 
+			    ALL('dim_date')
+			)
+			VAR _Yers = SELECTEDVALUE('Param 01: No. of Forecast Years'[Forecast years])
+			
+			VAR ForecastEndYear = LastActualYear + _Yers
+			RETURN
+			ForecastEndYear
+			```
+		formatString: 0
+		displayFolder: 02: Dynamic Narration text box
+		lineageTag: f3e4a514-39f5-4a6d-8a1b-bc1f829c2bb5
+
+	measure 'EV sold with Forccast Filtered with Last year of forecast' =
+			
+			
+			VAR _lastyear = [Last Year of forecast]
+			VAR _currentyear = SELECTEDVALUE( dim_years[fiscal_year])
+			VAR _totalEVsold =  CALCULATE([EV sold wiht forecast],
+			                                FILTER( ADDCOLUMNS( dim_years,"Total Ev Sold", [EV sold wiht forecast]),
+			                                    _currentyear <= _lastyear
+			                                )
+			                            )
+			
+			
+			RETURN _totalEVsold
+		displayFolder: 99: Debug
+		lineageTag: 5653ed9c-0d9a-498c-a986-fff455898f53
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Last Year of Actual Sales' = MAX(dim_date[fiscal_year])
+		formatString: 0
+		displayFolder: 02: Dynamic Narration text box
+		lineageTag: 35d25a2f-0ed8-4275-be9a-fe77e293d2bb
+
+	measure 'Forecasting for no of years' =
+			
+			
+			VAR _value = SELECTEDVALUE( 'Param 01: No. of Forecast Years'[Forecast Years])
+			VAR _text = _value & " "  & "Yrs."
+			
+			RETURN _text
+		displayFolder: 03: Year Slicer
+		lineageTag: 9ebd6c39-26c9-4260-a961-e746d680cdd9
+
+	measure 'Line 3: EV Sales on Last year of Actual sales' =
+			
+			
+			VAR _lastyearofactualsales = MAX(dim_date[fiscal_year])
+			VAR _currentyear = SELECTEDVALUE( dim_years[fiscal_year])
+			RETURN if( _currentyear =_lastyearofactualsales , [EV sold wiht forecast] , BLANK())
+		displayFolder: 01: Line Chart
+		lineageTag: a386f56f-c72a-483a-90f2-cdf7dc7d885d
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Lower Bound' = 0
+		formatString: 0
+		displayFolder: 01: Line Chart
+		lineageTag: a2bc3a87-f111-48fb-8eac-419b400bb19a
+
+	measure 'Datalable Line 3: Lable' = " Last Actual Sales"
+		displayFolder: 01: Line Chart
+		lineageTag: 3412c1b9-4b59-4105-8513-26ebc679ad5e
+
+	measure 'Formated CAGR for State Slicer' =
+			
+			
+			FORMAT([CAGR States EV Sales] , "#.00%")
+		displayFolder: 05: State Slicer
+		lineageTag: 0c24cb5f-60b8-4b3d-b616-3928ccaee83b
+
+	measure 'Line 4: EV Sales on Last year of Forecasted sales' =
+			
+			
+			VAR _lastyearofactualsales = [Last Year of forecast]
+			VAR _currentyear = SELECTEDVALUE( dim_years[fiscal_year])
+			RETURN if( _currentyear =_lastyearofactualsales , [EV sold wiht forecast] , BLANK())
+		displayFolder: 01: Line Chart
+		lineageTag: 7a9c2ee9-c3a4-459f-8e2b-88a492893ce3
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Y axis MAX' =
+			
+			
+			VAR _value =  maxx(dim_years, [Line 4: EV Sales on Last year of Forecasted sales])
+			VAR _multiplier = if( [CAGR States EV Sales] <0 , 12, 1.2)
+			
+			RETURN  _value*_multiplier
+		displayFolder: 01: Line Chart
+		lineageTag: d571a801-165d-4464-b49a-debddf1a4128
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'X axis MAX' = [Last Year of forecast] +.7
+		formatString: 0
+		displayFolder: 01: Line Chart
+		lineageTag: dbdc6af4-cb26-47c2-ab87-d18b037d72a3
+
+	measure 'Datalable Line 4: Lable' = " Forecasted EV Sales for"
+		displayFolder: 01: Line Chart
+		lineageTag: 2f9e8f27-55b6-4552-b20c-bdd769b2fb9d
+
+	measure 'Line 5: Shaded Area line' =
+			
+			VAR _currentyear = SELECTEDVALUE(dim_years[fiscal_year])
+			VAR _value = CALCULATE( [Y axis MAX], all(dim_years[fiscal_year]))
+			RETURN if( _currentyear>= [Last Year of Actual Sales] && _currentyear<= [Last Year of forecast], _value,BLANK())
+		formatString: 0
+		displayFolder: 01: Line Chart
+		lineageTag: fd45bc2e-02ce-47c4-a810-16ea76fbb705
+
+	measure 'Datalable Line 4: Detail' =
+			
+			
+			VAR _value = SWITCH(
+			                        TRUE(),
+			                        [Line 4: EV Sales on Last year of Forecasted sales]<1000, [Line 4: EV Sales on Last year of Forecasted sales],
+			                        AND([Line 4: EV Sales on Last year of Forecasted sales]>=1000, [Line 4: EV Sales on Last year of Forecasted sales]<10000), FORMAT([Line 4: EV Sales on Last year of Forecasted sales],"#0,000"),
+			                        AND([Line 4: EV Sales on Last year of Forecasted sales]>= 10000,[Line 4: EV Sales on Last year of Forecasted sales]<1000000),FORMAT([Line 4: EV Sales on Last year of Forecasted sales]/1000,"0.00K"),
+			                        AND([Line 4: EV Sales on Last year of Forecasted sales]>=1000000,[Line 4: EV Sales on Last year of Forecasted sales]<1000000000),FORMAT([Line 4: EV Sales on Last year of Forecasted sales]/1000000,"0.000M")
+			                )
+			RETURN _value
+		displayFolder: 01: Line Chart
+		lineageTag: c734b2d8-9b27-4ab3-aefe-abd0712dbc6e
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Datalable Line 3: Value' =
+			
+			
+			VAR _value = SWITCH(
+			                        TRUE(),
+			                        [Line 3: EV Sales on Last year of Actual sales]<1000, [Line 3: EV Sales on Last year of Actual sales],
+			                        AND([Line 3: EV Sales on Last year of Actual sales]>=1000, [Line 3: EV Sales on Last year of Actual sales]<10000), FORMAT([Line 3: EV Sales on Last year of Actual sales],"#0,000"),
+			                        AND([Line 3: EV Sales on Last year of Actual sales]>= 10000,[Line 3: EV Sales on Last year of Actual sales]<1000000),FORMAT([Line 3: EV Sales on Last year of Actual sales]/1000,"0.00K"),
+			                        AND([Line 3: EV Sales on Last year of Actual sales]>=1000000,[Line 3: EV Sales on Last year of Actual sales]<1000000000),FORMAT([Line 3: EV Sales on Last year of Actual sales]/1000000,"0.000M")
+			                )
+			RETURN _value
+		displayFolder: 01: Line Chart
+		lineageTag: 5a1389a4-d2c5-4f70-b76c-36f4d7e9667a
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Datalable Line 2: Value' = ```
+			
+			
+			VAR _currentyear = SELECTEDVALUE(dim_years[fiscal_year])
+			VAr _value = SWITCH( TRUE(),
+			                    _currentyear= [Last Year of Actual Sales], BLANK(),
+			                    _currentyear = [Last Year of forecast], BLANK(), 
+			                    [Line 2: Forecast_Sales_Line]
+			                    )
+			                    
+			VAR _fomrmatedvalue = SWITCH(
+			                        TRUE(),
+			                        _value<1000, _value,
+			                        AND(_value>=1000, _value<10000), FORMAT(_value,"#0,000"),
+			                        AND(_value>= 10000,_value<1000000),FORMAT(_value/1000,"0.00K"),
+			                        AND(_value>=1000000,_value<1000000000),FORMAT(_value/1000000,"0.000M")
+			                )
+			RETURN _fomrmatedvalue
+			```
+		displayFolder: 01: Line Chart
+		lineageTag: 6f27d3bb-b9c8-4595-9451-b41c8a7545dd
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Tick Hover' = "https://i.ibb.co/YTTFpvBm/checked-tick-svgrepo-com-Round-Grey.png"
+		displayFolder: 04: Vehicle Category Slicer
+		lineageTag: f39cb37d-502d-4c92-9c4c-6f8f67e6f5a6
+
+	measure 'Tick selected' = "https://i.ibb.co/wZVvQn0X/checked-tick-svgrepo-com-Round-Green.png"
+		displayFolder: 04: Vehicle Category Slicer
+		lineageTag: 555a7a04-2f3f-4326-b9b3-b3107ccdd256
+
+	measure 'State name' = If ( ISFILTERED(dim_states[state]), SELECTEDVALUE( dim_states[state]), "ALL States")
+		displayFolder: 02: Dynamic Narration text box
+		lineageTag: 40cb030d-ca0c-4d03-a5a0-6e0bfcef2ae2
+
+	measure 'Vehicle Category Name' = If ( ISFILTERED(dim_vehicle_Category[Decription]), SELECTEDVALUE( dim_vehicle_Category[Decription]) & " " & "EVs", "ALL EVs ")
+		displayFolder: 02: Dynamic Narration text box
+		lineageTag: a762cdfa-90b0-4451-9923-06d85ad1bc00
+
+	measure 'Datalable Line 4: Value' = "FY " & " " & SELECTEDVALUE( dim_years[fiscal_year])
+		displayFolder: 01: Line Chart
+		lineageTag: 4c0bdd96-b562-49f4-b25f-ecd255d16601
+
+	partition KPIs = m
+		mode: import
+		source =
+				let
+				    Source = Table.FromRows(Json.Document(Binary.Decompress(Binary.FromText("i44FAA==", BinaryEncoding.Base64), Compression.Deflate)), let _t = ((type nullable text) meta [Serialized.Text = true]) in type table [Column1 = _t]),
+				    #"Changed Type" = Table.TransformColumnTypes(Source,{{"Column1", type text}}),
+				    #"Removed Columns" = Table.RemoveColumns(#"Changed Type",{"Column1"})
+				in
+				    #"Removed Columns"
+
+	annotation PBI_ResultType = Table
+

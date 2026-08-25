@@ -1,0 +1,32 @@
+table dim_years
+	lineageTag: e4a29af7-4891-44d4-8077-deb2e91ee479
+
+	column fiscal_year
+		formatString: 0
+		lineageTag: 30861d16-ab88-4792-8b07-dadefde4fcdf
+		summarizeBy: none
+		sourceColumn: [Value]
+
+		annotation SummarizationSetBy = User
+
+	column Type
+		lineageTag: 0339deab-0189-45ca-8fa9-dd33ed180ac3
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [Type]
+
+		annotation SummarizationSetBy = Automatic
+
+	partition dim_years = calculated
+		mode: import
+		source = ```
+				
+				
+				ADDCOLUMNS( GENERATESERIES( MIN(dim_date[fiscal_year]), MAX(dim_date[fiscal_year])+10 , 1),
+				            "Type", if( [Value] <= MAX(dim_date[fiscal_year]), "Actual", "Forecasted")
+				)
+				
+				```
+
+	annotation PBI_Id = 8a3e443560c349b2b568c0c1e960cefc
+

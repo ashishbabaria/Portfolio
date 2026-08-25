@@ -1,0 +1,51 @@
+relationship ef8a957e-bfb7-4b7c-835a-4d6bb77e1e91
+	joinOnDateBehavior: datePartOnly
+	fromColumn: dim_date.date
+	toColumn: LocalDateTable_28a53772-e278-440e-9331-79e3cba4e2e9.Date
+
+relationship 190970cc-9a0a-e938-af3e-8a9141851fc4
+	fromColumn: electric_vehicle_sales_by_state.vehicle_category
+	toColumn: dim_vehicle_Category.Decription
+
+relationship f56cada4-ba2a-22ed-e4a5-b4063e4c9fdc
+	fromColumn: electric_vehicle_sales_by_state.date
+	toColumn: dim_date.date
+
+relationship 4e283d4e-6507-5a69-b206-715e93aa320f
+	fromColumn: electric_vehicle_sales_by_state.state
+	toColumn: dim_states.state
+
+relationship ce73a672-f1f1-37ba-b0aa-f56e10b4e7a4
+	crossFilteringBehavior: bothDirections
+	fromCardinality: one
+	fromColumn: dim_years.fiscal_year
+	toColumn: EV_Sales_Forecast.fiscal_year
+
+relationship 773088da-2dc6-9b49-693a-a78d531c2cc2
+	fromColumn: EV_Sales_Forecast_Only_State_Filter.fiscal_year
+	toColumn: dim_years.fiscal_year
+
+relationship d35b1070-0157-78f4-4368-623d7a10815f
+	fromColumn: EV_Sales_Forecast_Only_State_Filter.state
+	toColumn: dim_states.state
+
+relationship 0b2d783c-fb0f-9011-fe57-4dd1db136981
+	fromColumn: EV_Sales_Forecast_Only_Vehicle_Category_Filter.fiscal_year
+	toColumn: dim_years.fiscal_year
+
+relationship 486d285e-235c-7bb8-7c18-4c3ef2f558e3
+	fromColumn: EV_Sales_Forecast_Only_Vehicle_Category_Filter.vehicle_category
+	toColumn: dim_vehicle_Category.Decription
+
+relationship 24ff5177-90d1-efe3-bf9b-05f2a3429859
+	fromColumn: 'EV_Sales_Forecast BOTH Filters'.fiscal_year
+	toColumn: dim_years.fiscal_year
+
+relationship a7b424b0-f9ab-c439-d933-8d30c4ebb3ca
+	fromColumn: 'EV_Sales_Forecast BOTH Filters'.state
+	toColumn: dim_states.state
+
+relationship c1f68be0-84fd-dfeb-d002-ad415dd6f083
+	fromColumn: 'EV_Sales_Forecast BOTH Filters'.vehicle_category
+	toColumn: dim_vehicle_Category.Decription
+

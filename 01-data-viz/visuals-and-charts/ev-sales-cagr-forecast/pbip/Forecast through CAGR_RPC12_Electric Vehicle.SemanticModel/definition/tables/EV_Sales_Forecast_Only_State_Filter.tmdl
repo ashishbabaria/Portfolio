@@ -1,0 +1,87 @@
+table EV_Sales_Forecast_Only_State_Filter
+	lineageTag: 44e9f13b-5bff-4b83-bb36-57e58eb5baea
+
+	column fiscal_year
+		formatString: 0
+		lineageTag: d654b2be-ab17-4204-907e-c2fbcd21c48f
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [fiscal_year]
+
+		annotation SummarizationSetBy = User
+
+	column state
+		lineageTag: 3b54c2fe-5ee3-4d69-abe3-7144b5340787
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [state]
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Total EV Sold'
+		lineageTag: 3da1876b-089c-4fb7-bc0c-d116916ba7b8
+		summarizeBy: sum
+		isNameInferred
+		sourceColumn: [Total EV Sold]
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	partition EV_Sales_Forecast_Only_State_Filter = calculated
+		mode: import
+		source = ```
+				
+				VAR LastActualYear = CALCULATE(
+				    MAX('dim_date'[fiscal_year]), 
+				    ALL('dim_date')
+				) 
+				
+				VAR ForecastEndYear = 2034
+				
+				VAR ActualData =
+				    SELECTCOLUMNS(
+				        SUMMARIZE(
+				            'electric_vehicle_sales_by_state',
+				            'dim_date'[fiscal_year], 
+				            'electric_vehicle_sales_by_state'[state], 
+				            "Total EV Sold", SUM('electric_vehicle_sales_by_state'[electric_vehicles_sold])
+				        ),
+				        "fiscal_year", 'dim_date'[fiscal_year],
+				        "state", 'electric_vehicle_sales_by_state'[state],
+				        "Total EV Sold", [Total EV Sold]
+				    )
+				
+				
+				VAR ForecastedData = 
+				    SELECTCOLUMNS(
+				        CROSSJOIN(
+				            GENERATESERIES(LastActualYear + 1, ForecastEndYear, 1),
+				            SUMMARIZE(
+				                'electric_vehicle_sales_by_state',
+				                'electric_vehicle_sales_by_state'[state]
+				            )
+				        ),
+				        "fiscal_year", [Value],  
+				        "state", [state],  
+				        "Total EV Sold", 
+				        VAR StateFilter = [state]
+				        VAR BaseSales = 
+				            CALCULATE(
+				                SUM('electric_vehicle_sales_by_state'[electric_vehicles_sold]),
+				                'electric_vehicle_sales_by_state'[state] = StateFilter,
+				                FILTER(ALL('dim_date'), 'dim_date'[fiscal_year] = LastActualYear)
+				            )
+				
+				        
+				        RETURN 
+				            BaseSales * (1 + [Dynamic CAGR_State]) ^ ([Value] - LastActualYear)
+				    )
+				
+				RETURN 
+				UNION(ActualData, ForecastedData)
+				
+				```
+
+	annotation PBI_Id = dca631702b5143b1bc956c199cb2fa04
+

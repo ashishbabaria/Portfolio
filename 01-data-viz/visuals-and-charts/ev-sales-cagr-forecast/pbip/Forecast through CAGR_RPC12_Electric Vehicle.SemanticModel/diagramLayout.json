@@ -1,0 +1,163 @@
+{
+  "version": "1.1.0",
+  "diagrams": [
+    {
+      "ordinal": 0,
+      "scrollPosition": {
+        "x": 0,
+        "y": 0.35768245937356369
+      },
+      "nodes": [
+        {
+          "location": {
+            "x": 0,
+            "y": 422.77529691197265
+          },
+          "nodeIndex": "dim_date",
+          "nodeLineageTag": "05b5b6c7-820f-4854-b317-e43f490c95b1",
+          "size": {
+            "height": 225.28532365642286,
+            "width": 286.14532644783924
+          },
+          "zIndex": 8
+        },
+        {
+          "location": {
+            "x": 321.36360877020974,
+            "y": 122.14971428653251
+          },
+          "nodeIndex": "electric_vehicle_sales_by_state",
+          "nodeLineageTag": "c7aa6c21-d4e0-494f-a362-67f9c066de69",
+          "size": {
+            "height": 223.03029300000003,
+            "width": 269.43122000000017
+          },
+          "zIndex": 10
+        },
+        {
+          "location": {
+            "x": 1562.929026404604,
+            "y": 511.58370574973003
+          },
+          "nodeIndex": "KPIs",
+          "nodeLineageTag": "fd0c08ba-b110-4fc7-8800-3cc022569428",
+          "size": {
+            "height": 636.5775529613602,
+            "width": 310.83179936547208
+          },
+          "zIndex": 7
+        },
+        {
+          "location": {
+            "x": 923.90803699307673,
+            "y": 280.90225565483053
+          },
+          "nodeIndex": "EV_Sales_Forecast_Only_State_Filter",
+          "nodeLineageTag": "44e9f13b-5bff-4b83-bb36-57e58eb5baea",
+          "size": {
+            "height": 200,
+            "width": 245.2294499799284
+          },
+          "zIndex": 6
+        },
+        {
+          "location": {
+            "x": 919.4775119223134,
+            "y": 759.5300978241138
+          },
+          "nodeIndex": "EV_Sales_Forecast_Only_Vehicle_Category_Filter",
+          "nodeLineageTag": "070a478a-5b43-40f5-9448-9b800fd427cf",
+          "size": {
+            "height": 200,
+            "width": 254.12016560700545
+          },
+          "zIndex": 5
+        },
+        {
+          "location": {
+            "x": 923.54054208831667,
+            "y": 64.168285599590433
+          },
+          "nodeIndex": "EV_Sales_Forecast",
+          "nodeLineageTag": "1b06e463-286f-4433-b84a-6041ea4a958e",
+          "size": {
+            "height": 200,
+            "width": 243.62524283993844
+          },
+          "zIndex": 11
+        },
+        {
+          "location": {
+            "x": 539.48261187197943,
+            "y": 424.20111984861796
+          },
+          "nodeIndex": "dim_states",
+          "nodeLineageTag": "1c4c9781-b110-4bf4-b628-dcd0deed5af7",
+          "size": {
+            "height": 200,
+            "width": 234
+          },
+          "zIndex": 3
+        },
+        {
+          "location": {
+            "x": 548.35791734221937,
+            "y": 661.317286523076
+          },
+          "nodeIndex": "dim_vehicle_Category",
+          "nodeLineageTag": "064c0492-b961-457f-87ea-115fbf19a847",
+          "size": {
+            "height": 151.03029300000003,
+            "width": 237.05320069764798
+          },
+          "zIndex": 4
+        },
+        {
+          "location": {
+            "x": 1537.3036756211557,
+            "y": 184.45372690948767
+          },
+          "nodeIndex": "dim_years",
+          "size": {
+            "height": 200,
+            "width": 234
+          },
+          "zIndex": 9
+        },
+        {
+          "location": {
+            "x": 321.36493035300106,
+            "y": 829.08793999128272
+          },
+          "nodeIndex": "Param 01: No. of Forecast Years",
+          "size": {
+            "height": 145,
+            "width": 250.04207139989762
+          },
+          "zIndex": 1
+        },
+        {
+          "location": {
+            "x": 922.15765838806556,
+            "y": 510.82054827652803
+          },
+          "nodeIndex": "EV_Sales_Forecast BOTH Filters",
+          "nodeLineageTag": "c76f8341-8626-494e-b1db-64ec9e1566c3",
+          "size": {
+            "height": 200,
+            "width": 248.89522967584981
+          },
+          "zIndex": 2
+        }
+      ],
+      "name": "All tables",
+      "zoomValue": 62.336089590424251,
+      "pinKeyFieldsToTop": false,
+      "showExtraHeaderInfo": false,
+      "hideKeyFieldsWhenCollapsed": false,
+      "tablesLocked": false
+    }
+  ],
+  "selectedDiagram": "All tables",
+  "defaultDiagram": "All tables"
+}

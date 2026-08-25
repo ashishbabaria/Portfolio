@@ -1,0 +1,26 @@
+table 'Param 01: No. of Forecast Years'
+	lineageTag: bcfa03bd-c6e0-4389-9e0a-f7e9080a646e
+
+	measure 'Param 0401 Forecast Years Value' = SELECTEDVALUE('Param 01: No. of Forecast Years'[Forecast Years],1)
+		formatString: 0
+		lineageTag: a3169860-fff7-47eb-8e48-4e3853586e12
+
+	column 'Forecast Years'
+		formatString: 0
+		lineageTag: 5a0b88b6-5cb0-43ba-aef4-86b01cfaf259
+		summarizeBy: none
+		sourceColumn: [Value]
+
+		extendedProperty ParameterMetadata =
+				{
+				  "version": 0
+				}
+
+		annotation SummarizationSetBy = User
+
+	partition 'Param 01: No. of Forecast Years' = calculated
+		mode: import
+		source = GENERATESERIES(1, 10, 1)
+
+	annotation PBI_Id = 3fc158823ec946bf85dbc57ffbaa9968
+

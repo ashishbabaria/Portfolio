@@ -1,0 +1,17 @@
+table dim_states
+	lineageTag: 1c4c9781-b110-4bf4-b628-dcd0deed5af7
+
+	column state
+		lineageTag: 958418df-023f-4210-9e94-b41a251403d6
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: electric_vehicle_sales_by_state[state]
+
+		annotation SummarizationSetBy = Automatic
+
+	partition dim_states = calculated
+		mode: import
+		source = DISTINCT(electric_vehicle_sales_by_state[state])
+
+	annotation PBI_Id = 13b3d71895fa48269ae9dd8cee1bf3bd
+

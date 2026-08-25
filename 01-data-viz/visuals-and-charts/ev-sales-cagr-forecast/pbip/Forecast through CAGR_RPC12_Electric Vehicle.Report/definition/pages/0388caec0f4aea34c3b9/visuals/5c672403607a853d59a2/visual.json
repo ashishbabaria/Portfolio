@@ -1,0 +1,39 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.12.0/schema.json",
+  "name": "5c672403607a853d59a2",
+  "position": {
+    "x": 1113.3333333333335,
+    "y": 150,
+    "z": 17000,
+    "height": 146.66666666666669,
+    "width": 351.66666666666669,
+    "tabOrder": 17000
+  },
+  "visual": {
+    "visualType": "card",
+    "autoSelectVisualType": true,
+    "query": {
+      "queryState": {
+        "Values": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "KPIs"
+                    }
+                  },
+                  "Property": "EV sold with Forccast Filtered with Last year of forecast"
+                }
+              },
+              "queryRef": "KPIs.EV sold with Forccast Filtered with Last year of forecast",
+              "nativeQueryRef": "EV sold with Forccast Filtered with Last year of forecast"
+            }
+          ]
+        }
+      }
+    },
+    "drillFilterOtherVisuals": true
+  }
+}

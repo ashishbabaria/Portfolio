@@ -1,0 +1,11 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/gitIntegration/platformProperties/2.0.0/schema.json",
+  "metadata": {
+    "type": "Report",
+    "displayName": "Forecast through CAGR_RPC12_Electric Vehicle"
+  },
+  "config": {
+    "version": "2.0",
+    "logicalId": "239a9486-3a8e-41bf-ad3b-33c835d851f9"
+  }
+}

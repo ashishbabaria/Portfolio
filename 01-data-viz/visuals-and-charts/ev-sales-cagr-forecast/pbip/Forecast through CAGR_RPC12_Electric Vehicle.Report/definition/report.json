@@ -1,0 +1,95 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/report/3.3.0/schema.json",
+  "themeCollection": {
+    "baseTheme": {
+      "name": "CY24SU10",
+      "reportVersionAtImport": {
+        "visual": "1.8.96",
+        "report": "2.0.96",
+        "page": "1.3.96"
+      },
+      "type": "SharedResources"
+    }
+  },
+  "objects": {
+    "section": [
+      {
+        "properties": {
+          "verticalAlignment": {
+            "expr": {
+              "Literal": {
+                "Value": "'Top'"
+              }
+            }
+          }
+        }
+      }
+    ],
+    "outspacePane": [
+      {
+        "properties": {
+          "expanded": {
+            "expr": {
+              "Literal": {
+                "Value": "true"
+              }
+            }
+          }
+        }
+      }
+    ]
+  },
+  "publicCustomVisuals": [
+    "ZoomChartsAdvancedWaterfallE77E4ED357DC402ABA005987437CF900",
+    "simpleImageEBC4593F96F1425FB3D84C5BF02B5075",
+    "zebraBiCards2C860CFAA9944091B75F0DBD117F20FA",
+    "InforiverFilterF39DAE8D57A743EF89F5C3809DEE2B69"
+  ],
+  "resourcePackages": [
+    {
+      "name": "SharedResources",
+      "type": "SharedResources",
+      "items": [
+        {
+          "name": "CY24SU10",
+          "path": "BaseThemes/CY24SU10.json",
+          "type": "BaseTheme"
+        }
+      ]
+    },
+    {
+      "name": "RegisteredResources",
+      "type": "RegisteredResources",
+      "items": [
+        {
+          "name": "electric-car-car-svgrepo-com_(16058645654327086.png",
+          "path": "electric-car-car-svgrepo-com_(16058645654327086.png",
+          "type": "Image"
+        },
+        {
+          "name": "next-svgrepo-com_(1)005210112385714449.png",
+          "path": "next-svgrepo-com_(1)005210112385714449.png",
+          "type": "Image"
+        },
+        {
+          "name": "next-svgrepo-com_(1)577807570724099.png",
+          "path": "next-svgrepo-com_(1)577807570724099.png",
+          "type": "Image"
+        },
+        {
+          "name": "next-svgrepo-com_(3)5873765760844869.png",
+          "path": "next-svgrepo-com_(3)5873765760844869.png",
+          "type": "Image"
+        }
+      ]
+    }
+  ],
+  "settings": {
+    "useStylableVisualContainerHeader": true,
+    "exportDataMode": "AllowSummarized",
+    "defaultDrillFilterOtherVisuals": true,
+    "allowChangeFilterTypes": true,
+    "useEnhancedTooltips": true,
+    "useDefaultAggregateDisplayName": true
+  }
+}

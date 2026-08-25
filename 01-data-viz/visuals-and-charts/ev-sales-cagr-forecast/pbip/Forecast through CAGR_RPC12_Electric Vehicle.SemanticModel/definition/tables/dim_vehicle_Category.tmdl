@@ -1,0 +1,45 @@
+table dim_vehicle_Category
+	lineageTag: 064c0492-b961-457f-87ea-115fbf19a847
+
+	column Decription
+		dataType: string
+		lineageTag: 7e2ef81e-85af-4855-9bb2-10c728b5dffd
+		summarizeBy: none
+		sourceColumn: Decription
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Order ID'
+		dataType: int64
+		lineageTag: 6ce3aa65-a233-4e80-b9d1-05037e62ad2c
+		summarizeBy: none
+		sourceColumn: Order ID
+
+		annotation SummarizationSetBy = User
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column 'Avg. Price' =
+			
+			
+			If( dim_vehicle_Category[Order ID] = 1, 85000, 1500000)
+		formatString: 0
+		lineageTag: 2b704c3b-6714-4dc8-8d1d-ee2140e9a99f
+		summarizeBy: sum
+
+		annotation SummarizationSetBy = Automatic
+
+	partition dim_vehicle_Category = m
+		mode: import
+		source =
+				let
+				    Source = Table.FromRows(Json.Document(Binary.Decompress(Binary.FromText("i45WMtINz0hNzUktKlbSUTJUitWJVjJBFjJSio0FAA==", BinaryEncoding.Base64), Compression.Deflate)), let _t = ((type nullable text) meta [Serialized.Text = true]) in type table [Decription = _t, #"Order ID" = _t]),
+				    #"Changed Type" = Table.TransformColumnTypes(Source,{{"Decription", type text}, {"Order ID", Int64.Type}}),
+				    #"Trimmed Text" = Table.TransformColumns(#"Changed Type",{{"Decription", Text.Trim, type text}})
+				in
+				    #"Trimmed Text"
+
+	annotation PBI_ResultType = Table
+
+	annotation PBI_NavigationStepName = Navigation
+

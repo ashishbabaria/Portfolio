@@ -1,0 +1,7 @@
+expression DataFolder = "F:\Github Cloned Repos\Portfolio\01-data-viz\visuals-and-charts\ev-sales-cagr-forecast\data" meta [IsParameterQuery=true, Type="Text", IsParameterQueryRequired=true]
+	lineageTag: 40590f47-93d2-4039-ae8e-20a35e8349be
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Text
+
